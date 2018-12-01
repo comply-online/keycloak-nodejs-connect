@@ -46,7 +46,7 @@ function adminLogout (request, response, keycloak) {
     if (payload.action === 'LOGOUT') {
       let sessionIDs = payload.adapterSessionIds;
       if (!sessionIDs) {
-        keycloak.grantManager.notBefore = payload.notBefore;
+        keycloak.getGrantManager(request).notBefore = payload.notBefore;
         response.send('ok');
         return;
       }
@@ -77,7 +77,7 @@ function adminNotBefore (request, response, keycloak) {
     let parts = data.split('.');
     let payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
     if (payload.action === 'PUSH_NOT_BEFORE') {
-      keycloak.grantManager.notBefore = payload.notBefore;
+      keycloak.getGrantManager(request).notBefore = payload.notBefore;
       response.send('ok');
     }
   });
