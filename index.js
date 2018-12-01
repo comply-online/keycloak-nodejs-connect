@@ -80,8 +80,6 @@ function Keycloak (config, keycloakConfig) {
   } else if (config && config.cookies) {
     this.stores.push(CookieStore);
   }
-
-  this.config.idpHint = config.idpHint;
 }
 
 /**
@@ -113,6 +111,11 @@ Keycloak.prototype.middleware = function (options) {
 
   options.logout = options.logout || '/logout';
   options.admin = options.admin || '/';
+
+  const resolver = Object.keys(this.configs).length === 1 ? () => this.configs[Object.keys(this.configs)[0]].realm : options.realmResolver;
+  if (!resolver) {
+    throw new Error('Realm resolver must be provided for Multi-tenancy.');
+  }
 
   var middlewares = [];
 
