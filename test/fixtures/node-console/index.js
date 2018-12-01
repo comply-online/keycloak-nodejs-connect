@@ -28,8 +28,8 @@ Keycloak.prototype.redirectToLogin = function (req) {
   return !apiMatcher.test(req.baseUrl);
 };
 
-Keycloak.prototype.obtainDirectly = function (user, pass) {
-  return this.grantManager.obtainDirectly(user, pass);
+Keycloak.prototype.obtainDirectly = function (realmName, user, pass) {
+  return this.grantManagers[realmName].obtainDirectly(user, pass);
 };
 
 function NodeApp () {
@@ -145,7 +145,7 @@ function NodeApp () {
       if (!req.body.username || !req.body.password) {
         res.status(400).send('Username and password required');
       }
-      keycloak.obtainDirectly(req.body.username, req.body.password)
+      keycloak.obtainDirectly(kcConfig.realm, req.body.username, req.body.password)
         .then(grant => {
           keycloak.storeGrant(grant, req, res);
           res.json(grant);
